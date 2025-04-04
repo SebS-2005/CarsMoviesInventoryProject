@@ -55,37 +55,37 @@ public class FloresService{
         Page<FloresEntities> Flor = FloresRepository.findAllByFloresNameContaining(
                 movieToAdd.getFloresName(),
                 Pageable.unpaged());
-        if (movie.getTotalElements() > 0) {
-            return new ResponseEntity<>(Collections.singletonMap("Status", String.format("Movie already exists with %d coincidences.", movie.getTotalElements())), HttpStatus.CONFLICT);
+        if (Flor.getTotalElements() > 0) {
+            return new ResponseEntity<>(Collections.singletonMap("Status", String.format("Flor already exists with %d coincidences.", Flor.getTotalElements())), HttpStatus.CONFLICT);
         } else {
-            CarsMoviesEntity savedMovie = carsMoviesRepository.save(movieToAdd);
-            return new ResponseEntity<>(Collections.singletonMap("Status", String.format("Added Movie with ID %s", savedMovie.getId())), HttpStatus.CREATED);
+            FloresEntities savedFlor = FloresRepository.save(FlorToAdd);
+            return new ResponseEntity<>(Collections.singletonMap("Status", String.format("Added Flor with ID %s", savedFlor.getId())), HttpStatus.CREATED);
         }
     }
 
-    public ResponseEntity<?> updateMovie(UUID id, CarsMoviesEntity movieToUpdate) {
-        Optional<CarsMoviesEntity> movie = carsMoviesRepository.findById(id);
-        if (movie.isEmpty()) {
-            return new ResponseEntity<>(Collections.singletonMap("Status", String.format("Movie with ID %s not found.", id)), HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> updateFlor(UUID id, FloresEntities FlorToUpdate) {
+        Optional<FloresEntities> Flor = FloresRepository.findById(id);
+        if (Flor.isEmpty()) {
+            return new ResponseEntity<>(Collections.singletonMap("Status", String.format("Flor with ID %s not found.", id)), HttpStatus.NOT_FOUND);
         }
-        CarsMoviesEntity existingMovie = movie.get();
+        FloresEntities existingFlor = Flor.get();
 
-        existingMovie.setCarMovieName(movieToUpdate.getCarMovieName());
-        existingMovie.setCarMovieYear(movieToUpdate.getCarMovieYear());
-        existingMovie.setDuration(movieToUpdate.getDuration());
+        existingFlor.setFloresName(FlorToUpdate.getFloresName());
+        existingFlor.setFloresColor(FlorToUpdate.getFloresColor());
+        existingFlor.setTamano(FlorToUpdate.getTamano());
 
-        carsMoviesRepository.save(existingMovie);
+        FloresRepository.save(existingFlor);
 
-        return ResponseEntity.ok(Collections.singletonMap("Status", String.format("Updated Movie with ID %s", existingMovie.getId())));
+        return ResponseEntity.ok(Collections.singletonMap("Status", String.format("Updated Flor with ID %s", existingFlor.getId())));
     }
 
-    public ResponseEntity<?> deleteMovie(UUID id) {
-        Optional<CarsMoviesEntity> movie = carsMoviesRepository.findById(id);
-        if (movie.isEmpty()) {
-            return new ResponseEntity<>(Collections.singletonMap("Status", String.format("Movie with ID %s doesn't exist.", id)),HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> deleteFlor(UUID id) {
+        Optional<FloresEntities> Flor = FloresRepository.findById(id);
+        if (Flor.isEmpty()) {
+            return new ResponseEntity<>(Collections.singletonMap("Status", String.format("Flor with ID %s doesn't exist.", id)),HttpStatus.NOT_FOUND);
         }
-        carsMoviesRepository.deleteById(id);
-        return ResponseEntity.ok(Collections.singletonMap("Status", String.format("Deleted Movie with ID %s", id)));
+        FloresRepository.deleteById(id);
+        return ResponseEntity.ok(Collections.singletonMap("Status", String.format("Deleted Flor with ID %s", id)));
     }
 
 }
