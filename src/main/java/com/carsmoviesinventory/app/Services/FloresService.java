@@ -6,54 +6,54 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.carsmoviesinventory.app.Repositories.CarsMoviesRepository;
-import com.carsmoviesinventory.app.Entities.CarsMoviesEntity;
+import com.carsmoviesinventory.app.Repositories.FloresRepository;
+import com.carsmoviesinventory.app.Entities.FloresEntities;
 
 import java.util.*;
 
 @Service
-public class CarsMoviesService{
+public class FloresService{
 
-    private final CarsMoviesRepository carsMoviesRepository;
+    private final FloresRepository FloresRepository;
 
-    public CarsMoviesService(CarsMoviesRepository carsMoviesRepository) {
-        this.carsMoviesRepository = carsMoviesRepository;
+    public FloresService(FloresRepository FloresRepository) {
+        this.FloresRepository = FloresRepository;
     }
 
-    public ResponseEntity<?> getAllMovies(Pageable pageable) {
-        Page<CarsMoviesEntity> movies = carsMoviesRepository.findAll(pageable);
-        return getResponseEntity(movies);
+    public ResponseEntity<?> getAllFlores(Pageable pageable) {
+        Page<FloresEntities> Flores = FloresRepository.findAll(pageable);
+        return getResponseEntity(Flores);
     }
 
-    public ResponseEntity<?> getMoviesById(UUID id) {
-        Optional<CarsMoviesEntity> movie = carsMoviesRepository.findById(id);
-        if (movie.isEmpty()) {
+    public ResponseEntity<?> getFloresById(UUID id) {
+        Optional<FloresEntities> Flores = FloresRepository.findById(id);
+        if (Flores.isEmpty()) {
             Map<String, Object> response = new HashMap<>();
-            response.put("Status", String.format("Movie with ID %s not found.", id));
+            response.put("Status", String.format("Flor with ID %s not found.", id));
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        return ResponseEntity.ok(Collections.singletonMap("Movie", movie.get()));
+        return ResponseEntity.ok(Collections.singletonMap("Flor", Flor.get()));
     }
 
 
-    public ResponseEntity<?> getMoviesByName(String movieName, Pageable pageable) {
-        Page<CarsMoviesEntity> movies = carsMoviesRepository.findAllByCarMovieNameContaining(movieName, pageable);
-        return getResponseEntity(movies);
+    public ResponseEntity<?> getFloresByName(String FloresName, Pageable pageable) {
+        Page<FloresEntities> Flores = FloresRepository.findAllByFloresNameContaining(Florname, pageable);
+        return getResponseEntity(Flores);
     }
 
-    private ResponseEntity<?> getResponseEntity(Page<CarsMoviesEntity> movies) {
+    private ResponseEntity<?> getResponseEntity(Page<FloresEntities> Flores) {
         Map<String, Object> response = new HashMap<>();
-        response.put("TotalElements", movies.getTotalElements());
-        response.put("TotalPages", movies.getTotalPages());
-        response.put("CurrentPage", movies.getNumber());
-        response.put("NumberOfElements", movies.getNumberOfElements());
-        response.put("Movies", movies.getContent());
+        response.put("TotalElements", Flores.getTotalElements());
+        response.put("TotalPages", Flores.getTotalPages());
+        response.put("CurrentPage", Flores.getNumber());
+        response.put("NumberOfElements", Flores.getNumberOfElements());
+        response.put("Flores", Flores.getContent());
         return ResponseEntity.ok(response);
     }
 
-    public ResponseEntity<?> addMovie(CarsMoviesEntity movieToAdd) {
-        Page<CarsMoviesEntity> movie = carsMoviesRepository.findAllByCarMovieNameContaining(
-                movieToAdd.getCarMovieName(),
+    public ResponseEntity<?> addMovie(FloresEntities FlorToAdd) {
+        Page<FloresEntities> Flor = FloresRepository.findAllByFloresNameContaining(
+                movieToAdd.getFloresName(),
                 Pageable.unpaged());
         if (movie.getTotalElements() > 0) {
             return new ResponseEntity<>(Collections.singletonMap("Status", String.format("Movie already exists with %d coincidences.", movie.getTotalElements())), HttpStatus.CONFLICT);

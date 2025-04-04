@@ -1,6 +1,6 @@
 package com.carsmoviesinventory.app.Repositories;
 
-import com.carsmoviesinventory.app.Entities.CarsMoviesEntity;
+import com.carsmoviesinventory.app.Entities.FloresEntities;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,10 +9,10 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface CarsMoviesRepository extends JpaRepository<CarsMoviesEntity, UUID>{
+public interface FloresRepository extends JpaRepository<FloresEntities, UUID>{
 
-    Page<CarsMoviesEntity> findAllByCarMovieNameContaining(String carMovieName, Pageable pageable);
+    Page<FloresEntities> findAllByFloresNameContaining(String FloresName, Pageable pageable);
 
     @Override
-    Page<CarsMoviesEntity> findAll(Pageable pageable);
+    Page<FloresEntities> findAll(Pageable pageable);
 }
