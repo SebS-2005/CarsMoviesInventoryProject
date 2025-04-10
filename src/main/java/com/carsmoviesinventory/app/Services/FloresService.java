@@ -32,12 +32,12 @@ public class FloresService{
             response.put("Status", String.format("Flor with ID %s not found.", id));
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        return ResponseEntity.ok(Collections.singletonMap("Flor", Flor.get()));
+        return ResponseEntity.ok(Collections.singletonMap("Flor", Flores.get()));
     }
 
 
     public ResponseEntity<?> getFloresByName(String FloresName, Pageable pageable) {
-        Page<FloresEntities> Flores = FloresRepository.findAllByFloresNameContaining(Florname, pageable);
+        Page<FloresEntities> Flores = FloresRepository.findAllByFloresNameContaining(FloresName, pageable);
         return getResponseEntity(Flores);
     }
 
@@ -51,9 +51,9 @@ public class FloresService{
         return ResponseEntity.ok(response);
     }
 
-    public ResponseEntity<?> addMovie(FloresEntities FlorToAdd) {
+    public ResponseEntity<?> addFlor(FloresEntities FlorToAdd) {
         Page<FloresEntities> Flor = FloresRepository.findAllByFloresNameContaining(
-                movieToAdd.getFloresName(),
+                FlorToAdd.getFloresName(),
                 Pageable.unpaged());
         if (Flor.getTotalElements() > 0) {
             return new ResponseEntity<>(Collections.singletonMap("Status", String.format("Flor already exists with %d coincidences.", Flor.getTotalElements())), HttpStatus.CONFLICT);

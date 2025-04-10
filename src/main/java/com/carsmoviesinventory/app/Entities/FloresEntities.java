@@ -72,8 +72,8 @@ public class FloresEntities {
         return Tamano;
     }
 
-    public void setTamano(Integer Tamano) {
-        this.Tamano = Tamano;
+    public void setTamano(String Tamano) {
+        this.Tamano = Tamano ;
     }
 
 }
