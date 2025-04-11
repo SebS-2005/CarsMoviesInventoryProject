@@ -1,6 +1,6 @@
-MERGE INTO FLORES_ENTITI(id, FloresName, FloresColor, Tamano)
-    KEY(id)
-    VALUES
+MERGE INTO FLORES_ENTITI (id, floresName, floresColor, tamano)
+KEY (id)
+VALUES
     ('b27c5501-1fbb-47cd-b02e-1cb0f34daae9', 'Rosa', 'Rojo', 'Mediano'),
     ('6f63127c-5609-4b58-957d-b1c2308df7f3', 'Tulipán', 'Amarillo', 'Pequeño'),
     ('9391e6f9-bd08-4179-b28f-d207a1a72e5f', 'Lirio', 'Blanco', 'Grande'),

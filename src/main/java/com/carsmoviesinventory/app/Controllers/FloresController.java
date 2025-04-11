@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/Flores")
+@RequestMapping("/api/v1/flores")
 @Validated
 public class FloresController{
 
@@ -29,7 +29,7 @@ public class FloresController{
     public ResponseEntity<?> getAllFlores(
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "5") int size,
-        @RequestParam(defaultValue = "FloresName,asc") String[] sort) {
+        @RequestParam(defaultValue = "floresName,asc") String[] sort) {
         try {
                 Pageable pageable = PageRequest.of(page, size, Sort.by(parseSort(sort)));
                 return FloresService.getAllFlores(pageable);
@@ -40,7 +40,7 @@ public class FloresController{
 
     private Sort.Order parseSort(String[] sort) {
         if (sort.length < 2) {
-            throw new IllegalArgumentException("Sort parameter must have both field and direction (e.g., 'FloresColor,desc').");
+            throw new IllegalArgumentException("Sort parameter must have both field and direction (e.g., 'floresColor,desc').");
         }
 
         String property = sort[0];
@@ -65,7 +65,7 @@ public class FloresController{
             @RequestParam String FloresName,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
-            @RequestParam(defaultValue = "FloresName,asc") String[] sort) {
+            @RequestParam(defaultValue = "floresName,asc") String[] sort) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(parseSort(sort)));
         return FloresService.getFloresByName(FloresName, pageable);
