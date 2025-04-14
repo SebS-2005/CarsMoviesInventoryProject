@@ -14,78 +14,77 @@ import java.util.*;
 @Service
 public class FloresService{
 
-    private final FloresRepository FloresRepository;
+    private final FloresRepository floresRepository;
 
-    public FloresService(FloresRepository FloresRepository) {
-        this.FloresRepository = FloresRepository;
+    public FloresService(FloresRepository floresRepository) {
+        this.floresRepository = floresRepository;
     }
 
     public ResponseEntity<?> getAllFlores(Pageable pageable) {
-        Page<FloresEntities> Flores = FloresRepository.findAll(pageable);
-        return getResponseEntity(Flores);
+        Page<FloresEntities> flores = floresRepository.findAll(pageable);
+        return getResponseEntity(flores);
     }
 
     public ResponseEntity<?> getFloresById(UUID id) {
-        Optional<FloresEntities> Flores = FloresRepository.findById(id);
-        if (Flores.isEmpty()) {
+        Optional<FloresEntities> flores = floresRepository.findById(id);
+        if (flores.isEmpty()) {
             Map<String, Object> response = new HashMap<>();
             response.put("Status", String.format("Flor with ID %s not found.", id));
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-        return ResponseEntity.ok(Collections.singletonMap("Flor", Flores.get()));
+        return ResponseEntity.ok(Collections.singletonMap("Flor", flores.get()));
     }
 
 
     public ResponseEntity<?> getFloresByName(String FloresName, Pageable pageable) {
-        Page<FloresEntities> Flores = FloresRepository.findAllByFloresNameContaining(FloresName, pageable);
-        return getResponseEntity(Flores);
+        Page<FloresEntities> flores = floresRepository.findAllByFloresNameContaining(FloresName, pageable);
+        return getResponseEntity(flores);
     }
 
-    private ResponseEntity<?> getResponseEntity(Page<FloresEntities> Flores) {
+    private ResponseEntity<?> getResponseEntity(Page<FloresEntities> flores) {
         Map<String, Object> response = new HashMap<>();
-        response.put("TotalElements", Flores.getTotalElements());
-        response.put("TotalPages", Flores.getTotalPages());
-        response.put("CurrentPage", Flores.getNumber());
-        response.put("NumberOfElements", Flores.getNumberOfElements());
-        response.put("Flores", Flores.getContent());
+        response.put("TotalElements", flores.getTotalElements());
+        response.put("TotalPages", flores.getTotalPages());
+        response.put("CurrentPage", flores.getNumber());
+        response.put("NumberOfElements", flores.getNumberOfElements());
+        response.put("Flores", flores.getContent());
         return ResponseEntity.ok(response);
     }
 
-    public ResponseEntity<?> addFlor(FloresEntities FlorToAdd) {
-        Page<FloresEntities> Flor = FloresRepository.findAllByFloresNameContaining(
-                FlorToAdd.getFloresName(),
+    public ResponseEntity<?> addFlor(FloresEntities florToAdd) {
+        Page<FloresEntities> flor = floresRepository.findAllByFloresNameContaining(
+                florToAdd.getFloresName(),
                 Pageable.unpaged());
-        if (Flor.getTotalElements() > 0) {
-            return new ResponseEntity<>(Collections.singletonMap("Status", String.format("Flor already exists with %d coincidences.", Flor.getTotalElements())), HttpStatus.CONFLICT);
+        if (flor.getTotalElements() > 0) {
+            return new ResponseEntity<>(Collections.singletonMap("Status", String.format("Flor already exists with %d coincidences.", flor.getTotalElements())), HttpStatus.CONFLICT);
         } else {
-            FloresEntities savedFlor = FloresRepository.save(FlorToAdd);
+            FloresEntities savedFlor = floresRepository.save(florToAdd);
             return new ResponseEntity<>(Collections.singletonMap("Status", String.format("Added Flor with ID %s", savedFlor.getId())), HttpStatus.CREATED);
         }
     }
 
-    public ResponseEntity<?> updateFlor(UUID id, FloresEntities FlorToUpdate) {
-        Optional<FloresEntities> Flor = FloresRepository.findById(id);
-        if (Flor.isEmpty()) {
+    public ResponseEntity<?> updateFlor(UUID id, FloresEntities florToUpdate) {
+        Optional<FloresEntities> flor = floresRepository.findById(id);
+        if (flor.isEmpty()) {
             return new ResponseEntity<>(Collections.singletonMap("Status", String.format("Flor with ID %s not found.", id)), HttpStatus.NOT_FOUND);
         }
-        FloresEntities existingFlor = Flor.get();
+        FloresEntities existingFlor = flor.get();
 
-        existingFlor.setFloresName(FlorToUpdate.getFloresName());
-        existingFlor.setFloresColor(FlorToUpdate.getFloresColor());
-        existingFlor.setTamano(FlorToUpdate.getTamano());
+        existingFlor.setFloresName(florToUpdate.getFloresName());
+        existingFlor.setFloresColor(florToUpdate.getFloresColor());
+        existingFlor.setTamano(florToUpdate.getTamano());
 
-        FloresRepository.save(existingFlor);
+        floresRepository.save(existingFlor);
 
         return ResponseEntity.ok(Collections.singletonMap("Status", String.format("Updated Flor with ID %s", existingFlor.getId())));
     }
 
     public ResponseEntity<?> deleteFlor(UUID id) {
-        Optional<FloresEntities> Flor = FloresRepository.findById(id);
-        if (Flor.isEmpty()) {
+        Optional<FloresEntities> flor = floresRepository.findById(id);
+        if (flor.isEmpty()) {
             return new ResponseEntity<>(Collections.singletonMap("Status", String.format("Flor with ID %s doesn't exist.", id)),HttpStatus.NOT_FOUND);
         }
-        FloresRepository.deleteById(id);
+        floresRepository.deleteById(id);
         return ResponseEntity.ok(Collections.singletonMap("Status", String.format("Deleted Flor with ID %s", id)));
     }
-
 }

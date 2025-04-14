@@ -1,5 +1,4 @@
 package com.carsmoviesinventory.app.Controllers;
-
 import com.carsmoviesinventory.app.Entities.FloresEntities;
 import com.carsmoviesinventory.app.Services.FloresService;
 import jakarta.validation.Valid;
@@ -9,22 +8,18 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-
 @RestController
 @RequestMapping("/api/v1/flores")
 @Validated
 public class FloresController{
-
-    private final FloresService FloresService;
-
-    public FloresController(FloresService FloresService) {
-        this.FloresService = FloresService;
+    private final FloresService floresService;
+    public FloresController(FloresService floresService) {
+        this.floresService = floresService;
     }
-
     @GetMapping
     public ResponseEntity<?> getAllFlores(
         @RequestParam(defaultValue = "0") int page,
@@ -32,63 +27,60 @@ public class FloresController{
         @RequestParam(defaultValue = "floresName,asc") String[] sort) {
         try {
                 Pageable pageable = PageRequest.of(page, size, Sort.by(parseSort(sort)));
-                return FloresService.getAllFlores(pageable);
+                return floresService.getAllFlores(pageable);
             } catch (IllegalArgumentException e) {
                 return ResponseEntity.badRequest().body("Invalid sorting direction. Use 'asc' or 'desc'.");
             }
         }
-
-    private Sort.Order parseSort(String[] sort) {
-        if (sort.length < 2) {
-            throw new IllegalArgumentException("Sort parameter must have both field and direction (e.g., 'floresColor,desc').");
+    private List<Sort.Order> parseSort(String[] sort) {
+        List<Sort.Order> orders = new ArrayList<>();
+        
+        if (sort.length % 2 == 0) {
+            for (int i = 0; i < sort.length; i += 2) {
+                String property = sort[i];
+                String direction = sort[i+1].toLowerCase();
+                
+                if (!Arrays.asList("asc", "desc").contains(direction)) {
+                    throw new IllegalArgumentException("Invalid sort direction. Use 'asc' or 'desc'.");
+                }
+                
+                orders.add(new Sort.Order(Sort.Direction.fromString(direction), property));
+            }
+        } else if (sort.length == 1) {
+            orders.add(new Sort.Order(Sort.Direction.ASC, sort[0]));
+        } else {
+            throw new IllegalArgumentException("Sort parameter must have property-direction pairs.");
         }
-
-        String property = sort[0];
-        String direction = sort[1].toLowerCase();
-
-        List<String> validDirections = Arrays.asList("asc", "desc");
-        if (!validDirections.contains(direction)) {
-            throw new IllegalArgumentException("Invalid sort direction. Use 'asc' or 'desc'.");
-        }
-
-        return new Sort.Order(Sort.Direction.fromString(direction), property);
+        
+        return orders;
     }
-
-
     @GetMapping("/{id}")
     public ResponseEntity<?> getFloresById (@PathVariable UUID id){
-        return FloresService.getFloresById(id);
+        return floresService.getFloresById(id);
     }
-
     @GetMapping("/search")
     public ResponseEntity<?> getFloresByName(
             @RequestParam String FloresName,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
             @RequestParam(defaultValue = "floresName,asc") String[] sort) {
-
         Pageable pageable = PageRequest.of(page, size, Sort.by(parseSort(sort)));
-        return FloresService.getFloresByName(FloresName, pageable);
+        return floresService.getFloresByName(FloresName, pageable);
     }
-
     @PostMapping
-    public ResponseEntity<?> insertFlor(@Valid @RequestBody FloresEntities FloresEntities){
-        return FloresService.addFlor(FloresEntities);
+    public ResponseEntity<?> insertFlor(@Valid @RequestBody FloresEntities floresEntities){
+        return floresService.addFlor(floresEntities);
     }
-
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateFlor(@PathVariable UUID id, @Valid @RequestBody FloresEntities FloresEntities){
-        return FloresService.updateFlor(id,FloresEntities);
+    public ResponseEntity<?> updateFlor(@PathVariable UUID id, @Valid @RequestBody FloresEntities floresEntities){
+        return floresService.updateFlor(id,floresEntities);
     }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteFlor(@PathVariable UUID id){
-        return FloresService.deleteFlor(id);
+        return floresService.deleteFlor(id);
     }
-
     @GetMapping("/hello")
     public String hello(){
         return "Hello World";
     }
-
 }
