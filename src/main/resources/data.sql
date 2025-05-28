@@ -1,4 +1,4 @@
-INSERT INTO FLORES_ENTITI (id, floresName, floresColor, tamano) 
+INSERT INTO FLORES_ENTITI (id, flores_name, flores_color, tamano) 
 VALUES
     ('b27c5501-1fbb-47cd-b02e-1cb0f34daae9', 'Rosa', 'Rojo', 'Mediano'),
     ('6f63127c-5609-4b58-957d-b1c2308df7f3', 'Tulipán', 'Amarillo', 'Pequeño'),

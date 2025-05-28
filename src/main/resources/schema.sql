@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS FLORES_ENTITI (
     id UUID PRIMARY KEY,
-    floresName VARCHAR(255),
-    floresColor VARCHAR(255),
+    flores_name VARCHAR(255),
+    flores_color VARCHAR(255),
     tamano VARCHAR(255)
 );
